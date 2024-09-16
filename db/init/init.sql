@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS organization_responsible (
       user_id UUID REFERENCES employee(id) ON DELETE CASCADE
 );
 
--- Тут стартуют наши данные --
+
 
 CREATE TYPE tender_status AS ENUM ('Created', 'Published', 'Closed');
 CREATE TYPE tender_service_type AS ENUM ('Construction', 'Delivery', 'Manufacture');
@@ -103,49 +103,7 @@ CREATE TABLE IF NOT EXISTS tenders (
     	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);
 
--- Insert data is data base --
-
-	INSERT INTO organization (id, name, description, type) VALUES
-   		(uuid_generate_v4(), 'Organization 1', 'This is the first organization.', 'LLC'),
-    	(uuid_generate_v4(), 'Organization 2', 'This is the second organization.', 'IE'),
-    	(uuid_generate_v4(), 'Organization 3', 'This is the third organization.', 'JSC');
-
-	INSERT INTO employee (id, username, first_name, last_name) VALUES
-    	(uuid_generate_v4(), 'user1', 'John', 'Doe'),
-    	(uuid_generate_v4(), 'user2', 'Jane', 'Smith'),
-    	(uuid_generate_v4(), 'user3', 'Alice', 'Johnson');
-
-	INSERT INTO organization_responsible (id, organization_id, user_id) VALUES
-     	(uuid_generate_v4(), (SELECT id FROM organization WHERE name = 'Organization 1'), (SELECT id FROM employee WHERE username = 'user1')),
-     	(uuid_generate_v4(), (SELECT id FROM organization WHERE name = 'Organization 2'), (SELECT id FROM employee WHERE username = 'user2')),
-     	(uuid_generate_v4(), (SELECT id FROM organization WHERE name = 'Organization 3'), (SELECT id FROM employee WHERE username = 'user3'));
-
-	INSERT INTO tenders (id, name, description, service_type, status, organization_id, creator_username) VALUES
-    	(uuid_generate_v4(), 'Tender 1', 'Description for Tender 1', 'Construction', 'Created', (SELECT id FROM organization WHERE name = 'Organization 1'), 'user1'),
-    	(uuid_generate_v4(), 'Tender 2', 'Description for Tender 2', 'Delivery', 'Published', (SELECT id FROM organization WHERE name = 'Organization 2'), 'user2'),
-    	(uuid_generate_v4(), 'Tender 3', 'Description for Tender 3', 'Manufacture', 'Closed', (SELECT id FROM organization WHERE name = 'Organization 3'), 'user3');
-
-	INSERT INTO tender_versions (tender_id, name, description, service_type, status, organization_id, creator_username, version) VALUES
-    	((SELECT id FROM tenders WHERE name = 'Tender 1' LIMIT 1), 'Tender 1 Version 1', 'Version 1 of Tender 1', 'Construction', 'Created', (SELECT id FROM organization WHERE name = 'Organization 1'), 'user1', 1),
-    	((SELECT id FROM tenders WHERE name = 'Tender 2' LIMIT 1), 'Tender 2 Version 1', 'Version 1 of Tender 2', 'Delivery', 'Published', (SELECT id FROM organization WHERE name = 'Organization 2'), 'user2', 1),
-    	((SELECT id FROM tenders WHERE name = 'Tender 3' LIMIT 1), 'Tender 3 Version 1', 'Version 1 of Tender 3', 'Manufacture', 'Closed', (SELECT id FROM organization WHERE name = 'Organization 3'), 'user3', 1);
-
-	INSERT INTO bids (bid_id, name, description, status, tender_id, author_type, author_id)
-	VALUES
-    	(uuid_generate_v4(), 'Bid 1', 'Description for Bid 1', 'Created',
-    	(SELECT id FROM tenders WHERE name = 'Tender 1' LIMIT 1),
-    	'User',
-    	(SELECT id FROM employee WHERE username = 'user1' LIMIT 1)),
-
-    	(uuid_generate_v4(), 'Bid 2', 'Description for Bid 2', 'Published',
-    	(SELECT id FROM tenders WHERE name = 'Tender 2' LIMIT 1),
-    	'User',
-    	(SELECT id FROM employee WHERE username = 'user2' LIMIT 1)),
-
-    	(uuid_generate_v4(), 'Bid 3', 'Description for Bid 3', 'Closed',
-    	(SELECT id FROM tenders WHERE name = 'Tender 3' LIMIT 1),
-    	'User',
-    	(SELECT id FROM employee WHERE username = 'user3' LIMIT 1));
+-- Insert data into data base --
 
 INSERT INTO organization (id, name, description, type) VALUES
    (uuid_generate_v4(), 'Organization 1', 'This is the first organization.', 'LLC'),
